@@ -1,0 +1,2 @@
+data/protein_id_annotation_position.json filter=lfs diff=lfs merge=lfs -text
+data/protein_id_position_AA.json filter=lfs diff=lfs merge=lfs -text
