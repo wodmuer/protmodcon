@@ -491,13 +491,17 @@ def multiple_vis(
             pad=1
         ),
         yaxis=dict(
+            showgrid=False,
             side='right',
             ticktext=unique_descriptions,
             tickvals=list(range(len(unique_descriptions))),
-            showline=True,
+            showline=False,
+            mirror=False,
             range=[len(unique_descriptions) - 0.5, -0.5],  # Reverse the range to put first element at top
             tickfont=dict(size=12),
-            showgrid=False,  # Turn off the automatic grid since we're adding our own shapes
+            ticks='',
+            zeroline=False
+
         ),
         xaxis=dict(
             zeroline=True,
@@ -519,23 +523,20 @@ def multiple_vis(
         plot_bgcolor='white',
         showlegend=True
     )
-    
-    title_text = "Depleted ← log₂(odds ratio) → Enriched"
 
-    # 2. Add an annotation that serves as the title
-    # This positions the 'o' in 'odds' exactly at the zero point on the x-axis
     fig.add_annotation(
-        text=title_text,
-        font=dict(size=16),
-        xref='x',  # Using x-axis coordinates instead of paper
-        yref='paper',
-        x=0,  # Zero point on the x-axis
-        y=1.08,  # Position above the plot (adjust as needed)
-        showarrow=False,
-        xanchor='center',  # Center at the specified position
-        xshift=16,  # Shift to position the 'o' at zero (approximate pixel width of "Depleted ← log₂(")
-    )
-
+    text="Depleted ← log₂(odds ratio) → Enriched",
+    font=dict(size=16),
+    xref='x',         # Position in x-axis data coordinates
+    yref='paper',     # Position in normalized plot coordinates (0=bottom, 1=top)
+    x=0,              # Centered at x=0
+    y=1,              # Exactly at the x-axis
+    yshift=40,        # Shift up by 24 pixels (adjust as needed)
+    showarrow=False,
+    xanchor='center',
+    xshift=16        # Optional: fine-tune horizontal alignment
+)
+    
     return fig 
 
 import argparse
