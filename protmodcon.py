@@ -139,9 +139,9 @@ def precompute_nm_nc_k(x_types, y_types, ptm_name_AA, protein_id_annotation_posi
                 # Update progress every 1000 iterations
                 count += 1
                 if count % 1000 == 0 or count == total:
-                    print(f"  Progress: {count}/{total} combinations processed ({count/total*100:.1f}%)")
+                    print(f"Progress: {count}/{total} combinations processed ({count/total*100:.1f}%)")
     
-    print(f"  Precomputation completed in {time.time() - start_time:.2f} seconds")
+    print(f"Precomputation completed in {time.time() - start_time:.2f} seconds")
     return nm_per_d, nc_per_i, k_per_d_i
 
 def process_position_batch(args):
@@ -227,10 +227,6 @@ def process_i(x_types, y_types, n, nm_per_d, nc_per_i, k_per_d_i):
         (idx, table_a[idx], table_b[idx], table_c[idx], table_d[idx]) 
         for idx in valid_indices
     ]
-    for idx in valid_indices:
-        if any(val < 0 for val in (table_a[idx], table_b[idx], table_c[idx], table_d[idx])):
-            print(table_a[idx], table_b[idx], table_c[idx], table_d[idx])
-            print(x_array[idx], y_array[idx])
     # Parallel computation of p-values
     num_processes = min(os.cpu_count(), len(valid_indices))
     if num_processes > 1 and len(valid_indices) > 10:  # Only use multiprocessing for larger datasets
@@ -581,7 +577,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         '--modifiability', nargs='*', default=[],
-        help='Optional: Modifiability of amino acids per modification type. Format: "[Unimod accession]name:AA1,AA2", where the name corresponds to the Unimod PSI-MS Name or, if unavailable, the Unimod Interim name, e.g. --modifiability "[21]Phospho:S,T,Y" (double quotes mandatory). Valid ptm_name-AA combinations can be found as keys in data/ptm_name_AA.json.
+        help='Optional: Modifiability of amino acids per modification type. Format: "[Unimod accession]name:AA1,AA2", where the name corresponds to the Unimod PSI-MS Name or, if unavailable, the Unimod Interim name, e.g. --modifiability "[21]Phospho:S,T,Y" (double quotes mandatory). Valid ptm_name-AA combinations can be found as keys in data/ptm_name_AA.json.'
     )
 
     args = parser.parse_args()

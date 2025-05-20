@@ -285,14 +285,6 @@ def single_vis(
                     name=f'> {threshold}'
                 ))
         fig.update_layout(
-            title={
-                'text': (next(iter({clean_name(item) for item in x}))),
-                'font': {'size': 16},
-                'x': 0.5,
-                'xanchor': 'center'
-                #'y': 0.91,  # Further move title closer to plot
-                #'yanchor': 'top'
-            },
             yaxis_title='Depleted ← log₂(odds ratio) → Enriched',
             yaxis_title_standoff=0,
             barmode='relative',
@@ -302,9 +294,10 @@ def single_vis(
                 categoryarray=x_sorted,
                 tickangle=0 if any(val in {'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y'} for val in y) else -45, # -90 = vertical labels <> -45 = diagonal labels <> 0 = horizontal label rotation
                 tickfont=dict(size=12),
-                automargin=False,
-                title_standoff=0,  # Further reduce space between x-axis and labels            
-            ),
+                automargin=True,
+                showgrid=True,
+                gridcolor='rgb(229, 236, 246)',
+                gridwidth=0.5),
             yaxis=dict(
                 range=[min(tick_vals) - 0.5, max(tick_vals) + 0.5],
                 tickvals=tick_vals,
@@ -315,16 +308,15 @@ def single_vis(
                 showgrid=True,
                 gridcolor='rgb(229, 236, 246)',
                 gridwidth=1,
-                title_standoff=0, # Further reduce space between y-axis and title
                 title_font=dict(size=16)
             ),
             plot_bgcolor='white',
             showlegend=True,
             margin=dict(
-                l=50,
-                r=50,
-                b=80,  # Further reduce bottom margin
-                t=80,  # Further reduce top margin
+                l=20,
+                r=20,
+                b=20,  # Further reduce bottom margin
+                t=20,  # Further reduce top margin
                 pad=1
             )    
         )
@@ -473,18 +465,7 @@ def multiple_vis(
             ))
 
     # Add shapes for all grid lines FIRST (so they're underneath the data)
-    for i in range(len(unique_descriptions)):
-        # Add main gridlines at each label position
-        fig.add_shape(
-            type="line",
-            x0=x_axis_range[0],
-            y0=i,
-            x1=x_axis_range[1],
-            y1=i,
-            line=dict(color="rgb(229, 236, 246)", width=1, dash="solid"),
-            layer="between"
-        )
-        
+    for i in range(len(unique_descriptions)):       
         # Add intermediate gridline if not the last position
         if i < len(unique_descriptions) - 1:
             fig.add_shape(
@@ -493,25 +474,21 @@ def multiple_vis(
                 y0=i + 0.5,  # Positioned halfway between labels
                 x1=x_axis_range[1],
                 y1=i + 0.5,
-                line=dict(color="rgb(242, 245, 250)", width=0.75, dash="solid"),  # Lighter color and dashed
+                line=dict(color="rgb(229, 236, 246)", width=2, dash="solid"),
                 layer="below"
             )
     
     # Update layout
     fig.update_layout(
-        title={
-            'text': "Depleted ← log₂(odds ratio) → Enriched",
-            'font': {'size': 16},
-            'x':0.43, # to exactly postion the 'o' in odds above the central 0
-            'xanchor': 'center'
-        },
+        title=None,
         width=800,
         height= max(300, 100 + (len(unique_descriptions) * 50)),  # Increased spacing for better readability
         margin=dict(
-            l=200,  # Increased left margin for longer IPR and descriptions
-            r=350,
-            t=50,
-            b=75
+            l=20,  # Increased left margin for longer IPR and descriptions
+            r=20,
+            t=60,
+            b=20,
+            pad=1
         ),
         yaxis=dict(
             side='right',
@@ -541,6 +518,22 @@ def multiple_vis(
         ),
         plot_bgcolor='white',
         showlegend=True
+    )
+    
+    title_text = "Depleted ← log₂(odds ratio) → Enriched"
+
+    # 2. Add an annotation that serves as the title
+    # This positions the 'o' in 'odds' exactly at the zero point on the x-axis
+    fig.add_annotation(
+        text=title_text,
+        font=dict(size=16),
+        xref='x',  # Using x-axis coordinates instead of paper
+        yref='paper',
+        x=0,  # Zero point on the x-axis
+        y=1.08,  # Position above the plot (adjust as needed)
+        showarrow=False,
+        xanchor='center',  # Center at the specified position
+        xshift=16,  # Shift to position the 'o' at zero (approximate pixel width of "Depleted ← log₂(")
     )
 
     return fig 
